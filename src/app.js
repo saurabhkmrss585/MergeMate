@@ -1,20 +1,20 @@
 const express=require('express');
 const app=express();
+const {adminAuth,userAuth}=require('./middlewares/auth')
 
-app.listen("7777",()=>{ 
-    console.log("congrats your server is running ");
+
+app.use("/admin",adminAuth);
+app.get("/admin/getAllData",(req,res)=>{
+    res.send("hi u are authorized to see the data");
+});
+app.use("/user",userAuth,(req,res)=>{
+    res.send("user is authorized")
 })
+app.get("/admin/deleteData",(req,res)=>{
+    res.send("hi u are authorized to delete the data");
+});
 
-app.use("/user",(req,res,next)=>{
-   // res.send("Hi i am first route handler")
-    next();
-},
-(req,res,next)=>{
-    //res.send("hi i am second route handler ");
-    next();
 
-},
-(req,res)=>{
-    res.send("hi i am third route handler");
-}
-)
+app.listen(7777,()=>{ 
+    console.log("congrats your server is running ");
+});
