@@ -9,6 +9,9 @@ const userSchema=mongoose.Schema({
     },
     lastName:{
         type:"string",
+        minLength:4,
+        maxLength:50,
+     
     },
     emailId:{
         type:"string",
@@ -16,11 +19,11 @@ const userSchema=mongoose.Schema({
         required:"true",
         unique:true,
         trim:"true",
-        validate(value){
-            if(!validator.isEmail(value)){
-                 throw new Error("email is not valid"+ value)
-            }
-        }
+        // validate(value){
+        //     if(!validator.isEmail(value)){
+        //          throw new Error("email is not valid"+ value)
+        //     }
+        // }
     },
     age:{
         type:"Number",

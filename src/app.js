@@ -2,19 +2,71 @@ const express=require('express');
 const connectDB=require("./config/database");
 const app=express();
 const User=require("./models/user");
-
+const{signUpValidation}=require('./utils/validation')
+const bcrypt=require('bcrypt');
 app.use(express.json());
 
 app.post("/signUp",async(req,res)=>{
+  try{
+    //validation of data 
+    signUpValidation(req);
+    const{firstName,lastName,emailId,password}=req.body;
+
+   //encrypt the password 
+    const hashPassword=await bcrypt.hash(password,10);
+
+
     //creating new instance of user model
-    const user=new User(req.body); 
-    try{
+    const user=new User({
+      firstName,
+      lastName,
+      emailId,
+      password:hashPassword,
+    }); 
+    
     await user.save();
     res.send("hi user data saved");
     }catch(err){
-     res.status(400).send("there waserror in saving databse"+err.message);
+     res.status(400).send("ERROR:"+err.message);
     }
 })
+
+app.post("/login",async(req,res)=>{
+   try{
+    const{emailId,password}=req.body;
+    const user= await User.findOne({emailId:emailId})
+    if(!user){
+      throw new Error("wrong email")
+    }
+
+
+    const ispassValid=await bcrypt.compare(password,user.password);
+    if(ispassValid){
+     //create a jwt token
+
+
+
+     //add the token to cookie and send reposnse back to user 
+    
+    
+
+
+
+
+
+      res.send("login successfull");
+    }
+    
+
+    else{
+      throw new Error("wrong password")
+   }
+
+   }catch(err){
+    res.status(404).send("ERROR"+err.message);
+   }
+}
+);
 
 //get user by email
 app.get("/user",async(req,res)=>{
@@ -39,7 +91,7 @@ app.get("/feed",async(req,res)=>{
         res.send(users);
      }catch(err){
         res.send("there was error in receiving message")
-     }
+         }
 
 
 
@@ -54,7 +106,7 @@ res.send("user deleted successful");
 
 
 app.patch("/user",async(req,res)=>{
-    
+       
   try{
     const userId=req.body._id;
     const data=req.body;
