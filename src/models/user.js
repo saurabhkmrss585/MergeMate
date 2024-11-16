@@ -52,11 +52,11 @@ const userSchema=mongoose.Schema({
     },
     photoUrl:{
     type:"string",
-     validate(value){
-        if(!validator.isURL(value)){
-            throw new Error("please upload image url not any other url"); 
-        }
-     }
+    //  validate(value){
+    //     if(!validator.isURL(value)){
+    //         throw new Error("please upload image url not any other url"); 
+    //     }
+    //  }
     },
 
     about:{
